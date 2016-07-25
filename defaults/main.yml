@@ -1,0 +1,8 @@
+---
+vundle_user: "{{ user }}"
+vundle_group: "{{ group | default(vundle_user) }}"
+vundle_user_home: "{{ host_user_homes }}/{{ vundle_user }}"
+vundle_vim_dir: "{{ vundle_user_home }}/.vim"
+vundle_repo: "https://github.com/VundleVim/Vundle.vim.git"
+vundle_command_t_dir: "{{ vundle_vim_dir }}/bundle/Command-T"
+vundle_command_t_ext_dir: "{{ vundle_command_t_dir }}/ruby/command-t"

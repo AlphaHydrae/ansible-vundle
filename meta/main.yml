@@ -1,0 +1,24 @@
+---
+galaxy_info:
+  author: Simon Oulevay (Alpha Hydrae)
+  description: Installs Vundle and Vim dependencies.
+  license: MIT
+  min_ansible_version: 2.0
+
+  platforms:
+    - name: Darwin
+      versions:
+        - all
+    - name: Fedora
+      versions:
+        - all
+    - name: Ubuntu
+      versions:
+        - all
+
+  galaxy_tags:
+    - vundle
+
+dependencies:
+  - role: AlphaHydrae.vim
+  - role: AlphaHydrae.multipass
