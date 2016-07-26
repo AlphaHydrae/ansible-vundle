@@ -1,9 +1,9 @@
 ---
 
 # Install Vundle
-- name: mkdir ~/.vim
+- name: Make Vim directory
   file: path={{ vundle_vim_dir }} owner={{ vundle_user }} group={{ vundle_group }} mode=0755 state=directory
-- name: mkdir ~/.vim/bundle
+- name: Make Vim bundle directory
   file: path={{ vundle_vim_dir }}/bundle owner={{ vundle_user }} group={{ vundle_group }} mode=0755 state=directory
 - name: Clone vundle
   git: repo={{ vundle_repo }} dest={{ vundle_vim_dir }}/bundle/Vundle.vim update=no
@@ -12,40 +12,8 @@
   register: vundle_installed
 
 # Install Vim plugins
-- name: Install vim plugins
+- name: Install Vim plugins
   command: su - {{ vundle_user }} -c "vim -E -s -c 'source ~/.vimrc' -c PluginInstall -c qall"
   register: vim_plugins_installed
   changed_when: vim_plugins_installed.rc != 0
   when: vundle_installed|changed
-
-# Compile Command-T if installed
-# TODO: extract this into a separate role
-- name: Check if command-t was installed
-  command: test -d {{ vundle_command_t_dir }}
-  register: vundle_command_t_installed
-  changed_when: false
-  failed_when: vundle_command_t_installed.rc != 0 and vundle_command_t_installed.rc != 1
-  when: vundle_command_t_ruby is defined
-- name: Check if command-t was compiled
-  command: test -f {{ vundle_command_t_ext_dir }}/ext.bundle
-  register: vundle_command_t_compiled
-  changed_when: vundle_command_t_compiled.rc == 1
-  failed_when: vundle_command_t_compiled.rc != 0 and vundle_command_t_compiled.rc != 1
-  when: vundle_command_t_installed is defined and vundle_command_t_installed
-- name: Build command-t extension
-  shell: "{{ vundle_command_t_ruby }} extconf.rb"
-  args:
-    chdir: "{{ vundle_command_t_ext_dir }}"
-  become: true
-  become_user: "{{ vundle_user }}"
-  when: vundle_command_t_compiled is defined and vundle_command_t_compiled|changed
-- name: make clean command-t
-  shell: make clean chdir={{ vundle_command_t_ext_dir }}
-  become: true
-  become_user: "{{ vundle_user }}"
-  when: vundle_command_t_compiled is defined and vundle_command_t_compiled|changed
-- name: make command-t
-  shell: make chdir={{ vundle_command_t_ext_dir }}
-  become: true
-  become_user: "{{ vundle_user }}"
-  when: vundle_command_t_compiled is defined and vundle_command_t_compiled|changed
