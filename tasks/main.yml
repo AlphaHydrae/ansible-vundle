@@ -16,4 +16,4 @@
   command: su - {{ vundle_user }} -c "vim -E -s -c 'source ~/.vimrc' -c PluginInstall -c qall"
   register: vim_plugins_installed
   changed_when: vim_plugins_installed.rc != 0
-  when: vundle_installed|changed
+  when: vundle_installed is changed
