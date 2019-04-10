@@ -13,7 +13,9 @@
 
 # Install Vim plugins
 - name: Install Vim plugins
-  command: su - {{ vundle_user }} -c "vim -E -s -c 'source ~/.vimrc' -c PluginInstall -c qall"
+  command: "vim -E -s -c 'source ~/.vimrc' -c PluginInstall -c qall"
+  become: true
+  become_user: "{{ vundle_user }}"
   register: vim_plugins_installed
   changed_when: vim_plugins_installed.rc != 0
   when: vundle_installed is changed
