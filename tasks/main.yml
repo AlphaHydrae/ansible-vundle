@@ -1,21 +1,29 @@
 ---
 
-# Install Vundle
 - name: Make Vim directory
   file: path={{ vundle_vim_dir }} owner={{ vundle_user }} group={{ vundle_group }} mode=0755 state=directory
+
 - name: Make Vim bundle directory
   file: path={{ vundle_vim_dir }}/bundle owner={{ vundle_user }} group={{ vundle_group }} mode=0755 state=directory
+
 - name: Clone vundle
   git: repo={{ vundle_repo }} dest={{ vundle_vim_dir }}/bundle/Vundle.vim update=no
   become: true
   become_user: "{{ vundle_user }}"
   register: vundle_installed
 
-# Install Vim plugins
+- name: Check if Vim plugins are installed
+  shell: "test $(ls -1 ~/.vim/bundle|wc -l) -gt 1"
+  become: true
+  become_user: "{{ vundle_user }}"
+  changed_when: false
+  failed_when: false
+  register: vundle_plugins_installed_check_result
+
 - name: Install Vim plugins
   command: "vim -E -s -c 'source ~/.vimrc' -c PluginInstall -c qall"
   become: true
   become_user: "{{ vundle_user }}"
   register: vim_plugins_installed
   changed_when: vim_plugins_installed.rc != 0
-  when: vundle_installed is changed
+  when: vundle_plugins_installed_check_result.rc != 0
