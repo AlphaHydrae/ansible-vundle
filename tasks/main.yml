@@ -1,13 +1,21 @@
 ---
 
 - name: Make Vim directory
-  file: path={{ vundle_vim_dir }} owner={{ vundle_user }} group={{ vundle_group }} mode=0755 state=directory
+  file:
+    path: "{{ vundle_vim_dir }}"
+    owner: "{{ vundle_user }}"
+    group: "{{ vundle_group }}"
+    mode: 0755
+    state: directory
 
 - name: Make Vim bundle directory
   file: path={{ vundle_vim_dir }}/bundle owner={{ vundle_user }} group={{ vundle_group }} mode=0755 state=directory
 
 - name: Clone vundle
-  git: repo={{ vundle_repo }} dest={{ vundle_vim_dir }}/bundle/Vundle.vim update=no
+  git:
+    repo: "{{ vundle_repo }}"
+    dest: "{{ vundle_vim_dir }}/bundle/Vundle.vim"
+    update: false
   become: true
   become_user: "{{ vundle_user }}"
   register: vundle_installed
